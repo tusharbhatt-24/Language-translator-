@@ -1,4 +1,4 @@
-import type { Language, LanguageCode, AppSettings } from './types';
+import type { Language, LanguageCode, AppSettings } from '../types/index';
 
 export const APP_NAME = 'Lingo';
 export const APP_VERSION = '0.1.0';

@@ -16,7 +16,6 @@ function SettingRow({ icon: Icon, label, description, value }: SettingRowProps) 
         alignItems: 'center',
         gap: '14px',
         padding: '14px 0',
-        borderBottom: '1px solid var(--color-border-subtle)',
         backgroundColor: 'transparent',
         border: 'none',
         borderBottom: '1px solid var(--color-border-subtle)',
