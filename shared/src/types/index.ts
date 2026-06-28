@@ -1,29 +1,20 @@
-// Supported language definitions
-export type LanguageCode =
-  | 'en' | 'es' | 'fr' | 'de' | 'it' | 'pt'
-  | 'zh' | 'ja' | 'ko' | 'ar' | 'hi' | 'ru'
-  | 'nl' | 'pl' | 'sv' | 'tr' | 'vi' | 'th';
+// ─── Re-exports from languages.ts (canonical definitions) ─────────────────────
+export type { Language, LanguageCodeOrAuto } from '../constants/languages'
+export { AUTO_DETECT } from '../constants/languages'
 
-export interface Language {
-  code: LanguageCode;
-  name: string;         // English name
-  nativeName: string;   // Name in that language
-  rtl?: boolean;        // Right-to-left script
-}
-
-// Translation
+// Translation request/response
 export interface TranslationRequest {
   text: string;
-  sourceLanguage: LanguageCode | 'auto';
-  targetLanguage: LanguageCode;
+  sourceLang: string;       // language code or 'auto'
+  targetLang: string;
 }
 
 export interface TranslationResult {
   originalText: string;
   translatedText: string;
-  sourceLanguage: LanguageCode;
-  targetLanguage: LanguageCode;
-  detectedLanguage?: LanguageCode; // Set when source was 'auto'
+  sourceLang: string;
+  targetLang: string;
+  detectedLang?: string;    // Set when source was 'auto'
   timestamp: number;
 }
 
@@ -37,16 +28,16 @@ export interface HistoryEntry extends TranslationResult {
 export type SpeechStatus = 'idle' | 'listening' | 'processing' | 'error';
 
 export interface SpeechConfig {
-  language: LanguageCode;
+  language: string;
   continuous: boolean;
 }
 
 // App settings
 export interface AppSettings {
   theme: 'light' | 'dark' | 'system';
-  defaultSourceLanguage: LanguageCode | 'auto';
-  defaultTargetLanguage: LanguageCode;
+  defaultSourceLang: string;   // language code or 'auto'
+  defaultTargetLang: string;
   speechEnabled: boolean;
-  hapticFeedback: boolean; // mobile only
+  hapticFeedback: boolean;     // mobile only
   saveHistory: boolean;
 }
