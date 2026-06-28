@@ -67,7 +67,7 @@ export interface UseSpeechRecognitionReturn {
   status: SpeechRecognitionStatus
   interimTranscript: string   // live in-progress text
   error: string | null        // human-readable error message
-  start: (lang: string) => void
+  start: (lang: string, onFinal: (text: string) => void) => void
   stop: () => void
 }
 

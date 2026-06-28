@@ -1,5 +1,5 @@
 import { useState, useCallback } from 'react'
-import { ArrowRightLeft, Copy, Check, AlertCircle, Loader, RefreshCw } from 'lucide-react'
+import { ArrowRightLeft, Copy, Check, AlertCircle, Loader, RefreshCw, X } from 'lucide-react'
 import { LANGUAGE_MAP } from '@lingo/shared'
 import { LanguageSelector } from '../components/LanguageSelector'
 import { MicButton } from '../components/MicButton'
@@ -7,8 +7,12 @@ import { SpeakButton } from '../components/SpeakButton'
 import { useTranslation } from '../hooks/useTranslation'
 import { useSpeechRecognition, type StartFn } from '../hooks/useSpeechRecognition'
 import { useSpeechSynthesis } from '../hooks/useSpeechSynthesis'
+import { useSettings } from '../contexts/SettingsContext'
+import { useHistory, type HistoryItem } from '../contexts/HistoryContext'
+import { useEffect, useRef } from 'react'
+import { useLocation } from 'react-router-dom'
 
-const MAX_CHARS = 5000
+const MAX_CHARS = 500
 
 // ─── Copy button ──────────────────────────────────────────────────────────────
 
@@ -81,9 +85,28 @@ function ProviderBadge({ provider }: { provider?: 'mymemory' | 'libretranslate' 
 // ─── Page ─────────────────────────────────────────────────────────────────────
 
 export function Translate() {
-  const [sourceText, setSourceText] = useState('')
-  const [sourceLang, setSourceLang] = useState('auto')
-  const [targetLang, setTargetLang] = useState('es')
+  const { settings } = useSettings()
+  const { addHistoryItem } = useHistory()
+  const location = useLocation()
+  const [showOnboarding, setShowOnboarding] = useState(false)
+
+  // Local effect for onboarding
+  useEffect(() => {
+    if (!localStorage.getItem('lingo_onboarded')) {
+      setShowOnboarding(true)
+    }
+  }, [])
+
+  const dismissOnboarding = () => {
+    setShowOnboarding(false)
+    localStorage.setItem('lingo_onboarded', 'true')
+  }
+
+  const historyItem = location.state?.historyItem as HistoryItem | undefined
+
+  const [sourceText, setSourceText] = useState(historyItem?.sourceText || '')
+  const [sourceLang, setSourceLang] = useState(historyItem?.sourceLang || settings.defaultSourceLang)
+  const [targetLang, setTargetLang] = useState(historyItem?.targetLang || settings.defaultTargetLang)
 
   // Translation
   const { status, translatedText, detectedSourceLang, provider, errorMessage, errorReason, retranslate } =
@@ -102,11 +125,32 @@ export function Translate() {
   // startRec has a hidden 2nd arg (onFinal callback) — cast to access it
   const startRecWithCallback = startRec as unknown as StartFn
 
+  // History tracking and autoSpeak
+  const lastSavedText = useRef('')
+  useEffect(() => {
+    if (status === 'success' && translatedText && sourceText.trim() && sourceText !== lastSavedText.current) {
+      lastSavedText.current = sourceText
+      
+      const effectiveSource = detectedSourceLang ?? (sourceLang !== 'auto' ? sourceLang : 'auto')
+      addHistoryItem({
+        sourceText: sourceText.trim(),
+        translatedText: translatedText.trim(),
+        sourceLang: effectiveSource,
+        targetLang,
+      })
+
+      if (settings.autoSpeak) {
+        speak(translatedText, targetLang)
+      }
+    }
+  }, [status, translatedText, sourceText, detectedSourceLang, sourceLang, targetLang, addHistoryItem, settings.autoSpeak, speak])
+
   // ── Handlers ──────────────────────────────────────────────────────────────
 
   function handleMicStart() {
     // Stop TTS if it's playing
     if (isSpeaking) stopSpeak()
+    if (showOnboarding) dismissOnboarding()
 
     // Derive the recognition language:
     // If source is 'auto', use the browser language as a hint.
@@ -180,6 +224,39 @@ export function Translate() {
         </h1>
       </div>
 
+      {/* Onboarding Banner */}
+      {showOnboarding && (
+        <div style={{
+          display: 'flex',
+          alignItems: 'center',
+          justifyContent: 'space-between',
+          padding: '12px 16px',
+          marginBottom: '24px',
+          borderRadius: 'var(--radius-lg)',
+          backgroundColor: 'var(--color-surface)',
+          border: '1px solid var(--color-accent)',
+        }}>
+          <div>
+            <h3 style={{ margin: '0 0 4px', fontSize: '1rem', fontWeight: 600, color: 'var(--color-text)' }}>Welcome to Lingo! 👋</h3>
+            <p style={{ margin: 0, fontSize: '0.875rem', color: 'var(--color-text-secondary)', lineHeight: 1.4 }}>
+              Type your text or tap the microphone to translate instantly.
+            </p>
+          </div>
+          <button
+            onClick={dismissOnboarding}
+            style={{
+              background: 'none',
+              border: 'none',
+              cursor: 'pointer',
+              color: 'var(--color-text-tertiary)',
+              padding: '4px',
+            }}
+          >
+            <X size={18} />
+          </button>
+        </div>
+      )}
+
       {/* STT error banner (shown below header, dismisses on next action) */}
       {sttError && !isListening && (
         <div style={{
@@ -219,7 +296,6 @@ export function Translate() {
               ? 'var(--color-error)'
               : 'var(--color-border)'
           }`,
-          overflow: 'hidden',
           display: 'flex',
           flexDirection: 'column',
           transition: `border-color var(--duration-fast) var(--ease-out)`,
@@ -366,7 +442,6 @@ export function Translate() {
               ? 'var(--color-error)'
               : 'var(--color-border)'
           }`,
-          overflow: 'hidden',
           display: 'flex',
           flexDirection: 'column',
           transition: `background-color var(--duration-base) var(--ease-out), border-color var(--duration-base) var(--ease-out)`,
@@ -386,6 +461,7 @@ export function Translate() {
               }}
               accentWhenSelected
               label="Target language"
+              align="right"
             />
             <div style={{ display: 'flex', alignItems: 'center', gap: '6px' }}>
               {status === 'success' && provider && <ProviderBadge provider={provider} />}

@@ -3,6 +3,23 @@ import { StatusBar } from 'expo-status-bar'
 import { useFonts, SpaceGrotesk_400Regular, SpaceGrotesk_500Medium, SpaceGrotesk_600SemiBold, SpaceGrotesk_700Bold } from '@expo-google-fonts/space-grotesk'
 import { Sora_400Regular, Sora_500Medium, Sora_600SemiBold } from '@expo-google-fonts/sora'
 import { View, ActivityIndicator } from 'react-native'
+import { GestureHandlerRootView } from 'react-native-gesture-handler'
+import { SettingsProvider } from '../contexts/SettingsContext'
+import { HistoryProvider } from '../contexts/HistoryContext'
+import { ThemeProvider } from '../contexts/ThemeContext'
+import { useTheme } from '../contexts/ThemeContext'
+
+function ThemedApp() {
+  const { isDark, colors } = useTheme()
+  return (
+    <>
+      <StatusBar style={isDark ? "light" : "dark"} />
+      <Stack screenOptions={{ headerShown: false, contentStyle: { backgroundColor: colors.bg } }}>
+        <Stack.Screen name="(tabs)" />
+      </Stack>
+    </>
+  )
+}
 
 export default function RootLayout() {
   const [fontsLoaded] = useFonts({
@@ -24,7 +41,6 @@ export default function RootLayout() {
   })
 
   if (!fontsLoaded) {
-    // Minimal loading state — no splash screen yet
     return (
       <View style={{ flex: 1, backgroundColor: '#F5F0EB', alignItems: 'center', justifyContent: 'center' }}>
         <ActivityIndicator color="#C1440E" />
@@ -33,11 +49,14 @@ export default function RootLayout() {
   }
 
   return (
-    <>
-      <StatusBar style="dark" backgroundColor="#F5F0EB" />
-      <Stack screenOptions={{ headerShown: false }}>
-        <Stack.Screen name="(tabs)" />
-      </Stack>
-    </>
+    <GestureHandlerRootView style={{ flex: 1 }}>
+      <SettingsProvider>
+        <HistoryProvider>
+          <ThemeProvider>
+            <ThemedApp />
+          </ThemeProvider>
+        </HistoryProvider>
+      </SettingsProvider>
+    </GestureHandlerRootView>
   )
 }

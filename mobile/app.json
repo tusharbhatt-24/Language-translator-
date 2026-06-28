@@ -27,7 +27,15 @@
     },
     "plugins": [
       "expo-router",
-      "expo-font"
+      "expo-font",
+      [
+        "expo-speech-recognition",
+        {
+          "microphonePermission": "Allow Lingo to access the microphone for speech-to-text translation.",
+          "speechRecognitionPermission": "Allow Lingo to securely recognize your speech for translation."
+        }
+      ],
+      "expo-build-properties"
     ],
     "experiments": {
       "typedRoutes": true

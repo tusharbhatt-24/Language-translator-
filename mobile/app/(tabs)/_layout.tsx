@@ -2,17 +2,11 @@ import { Tabs } from 'expo-router'
 import { Platform } from 'react-native'
 import { Languages, Clock3, Settings } from 'lucide-react-native'
 
-// Design tokens (inlined — RN can't import CSS vars)
-const colors = {
-  accent: '#C1440E',
-  bg: '#F5F0EB',
-  surface: '#EDEAE5',
-  border: '#D9D3CC',
-  textSecondary: '#6B5E58',
-  text: '#1A1614',
-}
+import { useTheme } from '../../contexts/ThemeContext'
 
 export default function TabLayout() {
+  const { colors } = useTheme()
+
   return (
     <Tabs
       screenOptions={{

@@ -58,6 +58,35 @@
   --radius-full: 9999px;
 }
 
+/* ─── Dark Mode Overrides ───────────────────────────────────────────────── */
+:root.dark {
+  --color-accent: #C1440E;
+  --color-accent-hover: #D65A20;
+  --color-accent-muted: #632A11;
+  --color-accent-subtle: #2E150B;
+
+  --color-bg: #1A1614;
+  --color-surface: #2D2825;
+  --color-elevated: #3B3430;
+  --color-inverse: #F5F0EB;
+
+  --color-text: #F5F0EB;
+  --color-text-secondary: #B5ADA5;
+  --color-text-tertiary: #857870;
+  --color-text-inverse: #1A1614;
+  --color-text-accent: #D65A20;
+
+  --color-border: #4A413C;
+  --color-border-strong: #6B5E58;
+  --color-border-subtle: #332D29;
+
+  --color-error: #EF4444;
+  --color-error-subtle: #3B1818;
+  --color-success: #22C55E;
+  --color-success-subtle: #12301D;
+}
+
+
 /* ─── Base resets ───────────────────────────────────────────────────────── */
 *, *::before, *::after {
   box-sizing: border-box;

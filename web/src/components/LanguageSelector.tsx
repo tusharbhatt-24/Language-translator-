@@ -8,6 +8,7 @@ interface LanguageSelectorProps {
   allowAuto?: boolean      // show "Detect language" option
   accentWhenSelected?: boolean // tint the label terracotta when a non-auto lang is chosen
   label?: string           // accessible label for the trigger button
+  align?: 'left' | 'right' // dropdown alignment
 }
 
 export function LanguageSelector({
@@ -16,6 +17,7 @@ export function LanguageSelector({
   allowAuto = false,
   accentWhenSelected = false,
   label = 'Select language',
+  align = 'left',
 }: LanguageSelectorProps) {
   const [open, setOpen] = useState(false)
   const [search, setSearch] = useState('')
@@ -115,7 +117,7 @@ export function LanguageSelector({
           style={{
             position: 'absolute',
             top: 'calc(100% + 6px)',
-            left: 0,
+            ...(align === 'right' ? { right: 0 } : { left: 0 }),
             width: '220px',
             backgroundColor: 'var(--color-bg)',
             border: '1px solid var(--color-border)',

@@ -58,9 +58,16 @@ function cacheKey(text: string, source: string, target: string): string {
 
 const MYMEMORY_BASE = 'https://api.mymemory.translated.net/get';
 
+function fetchWithTimeout(url: string, options: RequestInit, timeout: number): Promise<Response> {
+  const controller = new AbortController();
+  const id = setTimeout(() => controller.abort(), timeout);
+  return fetch(url, { ...options, signal: controller.signal }).finally(() => clearTimeout(id));
+}
+
 interface MyMemoryResponse {
   responseStatus: number;
   responseMessage?: string;
+  responseDetails?: string;
   responseData: {
     translatedText: string;
     match: number;
@@ -85,11 +92,10 @@ async function translateWithMyMemory(
 
   let response: Response;
   try {
-    response = await fetch(url.toString(), {
+    response = await fetchWithTimeout(url.toString(), {
       method: 'GET',
       headers: { Accept: 'application/json' },
-      signal: AbortSignal.timeout(8000), // 8s timeout
-    });
+    }, 8000);
   } catch (err) {
     return {
       status: 'error',
@@ -119,12 +125,12 @@ async function translateWithMyMemory(
   // MyMemory uses responseStatus 200 for success, 429/403/etc for errors
   if (data.responseStatus !== 200) {
     if (data.responseStatus === 429) {
-      return { status: 'error', reason: 'rate_limited', message: data.responseMessage ?? 'Rate limited' };
+      return { status: 'error', reason: 'rate_limited', message: data.responseMessage ?? data.responseDetails ?? 'Rate limited' };
     }
     return {
       status: 'error',
       reason: 'unknown',
-      message: data.responseMessage ?? `MyMemory error ${data.responseStatus}`,
+      message: data.responseMessage ?? data.responseDetails ?? `MyMemory error ${data.responseStatus}`,
     };
   }
 
@@ -161,17 +167,17 @@ async function translateWithLibreTranslate(
 ): Promise<TranslationOutcome> {
   let response: Response;
   try {
-    response = await fetch(LIBRETRANSLATE_BASE, {
+    response = await fetchWithTimeout(LIBRETRANSLATE_BASE, {
       method: 'POST',
-      headers: { 'Content-Type': 'application/json', Accept: 'application/json' },
       body: JSON.stringify({
         q: text,
         source: source === 'auto' ? 'auto' : source,
         target,
         format: 'text',
+        alternatives: 0,
       }),
-      signal: AbortSignal.timeout(10000), // 10s — LibreTranslate can be slow
-    });
+      headers: { 'Content-Type': 'application/json' },
+    }, 10000);
   } catch (err) {
     return {
       status: 'error',

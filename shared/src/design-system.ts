@@ -31,40 +31,31 @@
 
 // ─── Color Tokens ─────────────────────────────────────────────────────────────
 
-export const colors = {
-  // Accent — burnt terracotta
+export const lightColors = {
   accent: {
     DEFAULT: '#C1440E',
     hover: '#A3380B',
-    muted: '#E8B49A',       // for tinted backgrounds
-    subtle: '#FDF1EC',      // very light tint for hover states on light bg
+    muted: '#E8B49A',
+    subtle: '#FDF1EC',
   },
-
-  // Backgrounds
   background: {
-    DEFAULT: '#F5F0EB',     // warm linen
-    surface: '#EDEAE5',     // cards, panels — slightly darker
-    elevated: '#E6E1DB',    // tooltips, dropdowns
-    inverse: '#1A1614',     // dark surfaces
+    DEFAULT: '#F5F0EB',
+    surface: '#EDEAE5',
+    elevated: '#E6E1DB',
+    inverse: '#1A1614',
   },
-
-  // Text
   text: {
-    primary: '#1A1614',     // main content
-    secondary: '#6B5E58',   // supporting, metadata
-    tertiary: '#9E9189',    // placeholders, disabled
-    inverse: '#F5F0EB',     // on dark backgrounds
-    accent: '#C1440E',      // accent-coloured text
+    primary: '#1A1614',
+    secondary: '#6B5E58',
+    tertiary: '#9E9189',
+    inverse: '#F5F0EB',
+    accent: '#C1440E',
   },
-
-  // Borders
   border: {
     DEFAULT: '#D9D3CC',
     strong: '#B5ADA5',
     subtle: '#E9E5DF',
   },
-
-  // Semantic
   semantic: {
     error: '#D93025',
     errorSubtle: '#FDF1F0',
@@ -73,13 +64,58 @@ export const colors = {
     warning: '#C47C0A',
     warningSubtle: '#FEF8EC',
   },
-
-  // Always absolute — don't use these for themeable surfaces
   always: {
     white: '#FFFFFF',
     black: '#000000',
   },
 } as const;
+
+export const darkColors = {
+  accent: {
+    DEFAULT: '#C1440E', // Keep terracotta accent
+    hover: '#D65A20',
+    muted: '#632A11',
+    subtle: '#2E150B',
+  },
+  background: {
+    DEFAULT: '#1A1614',
+    surface: '#2D2825',
+    elevated: '#3B3430',
+    inverse: '#F5F0EB',
+  },
+  text: {
+    primary: '#F5F0EB',
+    secondary: '#B5ADA5',
+    tertiary: '#857870',
+    inverse: '#1A1614',
+    accent: '#D65A20',
+  },
+  border: {
+    DEFAULT: '#4A413C',
+    strong: '#6B5E58',
+    subtle: '#332D29',
+  },
+  semantic: {
+    error: '#EF4444', // Brighter red for dark mode
+    errorSubtle: '#3B1818',
+    success: '#22C55E', // Brighter green for dark mode
+    successSubtle: '#12301D',
+    warning: '#F59E0B',
+    warningSubtle: '#3B2A10',
+  },
+  always: {
+    white: '#FFFFFF',
+    black: '#000000',
+  },
+} as const;
+
+export const THEME_COLORS = {
+  light: lightColors,
+  dark: darkColors,
+} as const;
+
+// For backwards compatibility where `colors` is directly imported in mobile
+export const colors = lightColors;
 
 // ─── Typography Scale ─────────────────────────────────────────────────────────
 
