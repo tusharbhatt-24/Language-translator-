@@ -1,0 +1,116 @@
+/* ─── Lingo Web — Global Styles ──────────────────────────────────────────── */
+
+/* Google Fonts */
+@import url('https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&family=Sora:wght@400;500;600&display=swap');
+
+/* Tailwind v4 — single directive, no layers needed */
+@import "tailwindcss";
+
+/* ─── Design tokens as CSS custom properties ────────────────────────────── */
+@theme {
+  /* Typography */
+  --font-display: "Space Grotesk", system-ui, sans-serif;
+  --font-body: "Sora", system-ui, sans-serif;
+  --font-mono: "JetBrains Mono", "Fira Code", monospace;
+
+  /* Colours — accent (terracotta) */
+  --color-accent: #C1440E;
+  --color-accent-hover: #A3380B;
+  --color-accent-muted: #E8B49A;
+  --color-accent-subtle: #FDF1EC;
+
+  /* Colours — backgrounds */
+  --color-bg: #F5F0EB;
+  --color-surface: #EDEAE5;
+  --color-elevated: #E6E1DB;
+  --color-inverse: #1A1614;
+
+  /* Colours — text */
+  --color-text: #1A1614;
+  --color-text-secondary: #6B5E58;
+  --color-text-tertiary: #9E9189;
+  --color-text-inverse: #F5F0EB;
+  --color-text-accent: #C1440E;
+
+  /* Colours — borders */
+  --color-border: #D9D3CC;
+  --color-border-strong: #B5ADA5;
+  --color-border-subtle: #E9E5DF;
+
+  /* Semantic */
+  --color-error: #D93025;
+  --color-error-subtle: #FDF1F0;
+  --color-success: #1E7E4A;
+  --color-success-subtle: #EDF7F1;
+
+  /* Motion */
+  --duration-fast: 150ms;
+  --duration-base: 200ms;
+  --ease-out: cubic-bezier(0, 0, 0.2, 1);
+  --ease-in: cubic-bezier(0.4, 0, 1, 1);
+
+  /* Border radius */
+  --radius-sm: 4px;
+  --radius: 8px;
+  --radius-md: 10px;
+  --radius-lg: 14px;
+  --radius-xl: 20px;
+  --radius-full: 9999px;
+}
+
+/* ─── Base resets ───────────────────────────────────────────────────────── */
+*, *::before, *::after {
+  box-sizing: border-box;
+}
+
+html, body, #root {
+  height: 100%;
+  margin: 0;
+  padding: 0;
+}
+
+body {
+  background-color: var(--color-bg);
+  color: var(--color-text);
+  font-family: var(--font-body);
+  font-size: 16px;
+  line-height: 1.5;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+/* Headings use Space Grotesk */
+h1, h2, h3, h4, h5, h6 {
+  font-family: var(--font-display);
+  line-height: 1.2;
+  letter-spacing: -0.02em;
+}
+
+/* Focus visible — accessible but non-intrusive */
+:focus-visible {
+  outline: 2px solid var(--color-accent);
+  outline-offset: 2px;
+  border-radius: var(--radius-sm);
+}
+
+/* Scrollbar — minimal, themed */
+::-webkit-scrollbar {
+  width: 6px;
+  height: 6px;
+}
+::-webkit-scrollbar-track {
+  background: transparent;
+}
+::-webkit-scrollbar-thumb {
+  background: var(--color-border);
+  border-radius: var(--radius-full);
+}
+::-webkit-scrollbar-thumb:hover {
+  background: var(--color-border-strong);
+}
+
+/* ─── Selection ─────────────────────────────────────────────────────────── */
+::selection {
+  background: var(--color-accent-muted);
+  color: var(--color-text);
+}
