@@ -1,0 +1,36 @@
+{
+  "expo": {
+    "name": "Lingo",
+    "slug": "lingo",
+    "version": "0.1.0",
+    "orientation": "portrait",
+    "icon": "./assets/icon.png",
+    "userInterfaceStyle": "light",
+    "scheme": "lingo",
+    "ios": {
+      "supportsTablet": true,
+      "bundleIdentifier": "com.lingo.app"
+    },
+    "android": {
+      "package": "com.lingo.app",
+      "adaptiveIcon": {
+        "backgroundColor": "#F5F0EB",
+        "foregroundImage": "./assets/android-icon-foreground.png",
+        "backgroundImage": "./assets/android-icon-background.png",
+        "monochromeImage": "./assets/android-icon-monochrome.png"
+      },
+      "predictiveBackGestureEnabled": false
+    },
+    "web": {
+      "bundler": "metro",
+      "favicon": "./assets/favicon.png"
+    },
+    "plugins": [
+      "expo-router",
+      "expo-font"
+    ],
+    "experiments": {
+      "typedRoutes": true
+    }
+  }
+}
