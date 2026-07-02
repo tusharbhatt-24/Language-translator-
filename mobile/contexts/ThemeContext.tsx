@@ -33,7 +33,7 @@ export function useTheme() {
   const c = context.colors
   const flatColors = {
     accent: c.accent.DEFAULT,
-    accentSubtle: c.accent.subtle,
+    accentSubtle: c.accent.subtle,a
     bg: c.background.DEFAULT,
     surface: c.background.surface,
     border: c.border.DEFAULT,
